@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Badge } from '../components/atoms';
+import { Button } from '../components/atoms';
 import { Alert, Table, Modal } from '../components/organisms';
 import { FormInput, FormSelect, FormTextarea } from '../components/molecules';
-import { userService } from '../services/userService';
 import { postService } from '../services/postService';
 import type { User } from '../domains/user/types';
 import type { Post } from '../domains/post/types';
 import { USER_ROLES, USER_STATUSES, calculateUserStats, getUserTableColumns } from '../domains/user';
 import { POST_CATEGORIES, calculatePostStats, getPostTableColumns } from '../domains/post';
 import { useNotification } from '../hooks/useNotification';
+import { useUserManagement } from '../hooks/useUserManagement';
 import '../styles/components.css';
 
 type EntityType = 'user' | 'post';
@@ -20,30 +20,40 @@ export const ManagementPage: React.FC = () => {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<Entity | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [formData, setFormData] = useState<any>({});
 
   const { notifications, showSuccess, showError, removeNotification } = useNotification();
+  const { users, createUser, updateUser, deleteUser } = useUserManagement();
 
   useEffect(() => {
-    loadData();
+    if (entityType === 'post') {
+      loadData();
+    }
     setFormData({});
     setIsCreateModalOpen(false);
     setIsEditModalOpen(false);
     setSelectedItem(null);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [entityType]);
+
+  // users 데이터를 data에 동기화
+  useEffect(() => {
+    if (entityType === 'user') {
+      setData(users as Entity[]);
+    }
+  }, [users, entityType]);
 
   const loadData = async () => {
     try {
-      let result: Entity[];
-
       if (entityType === 'user') {
-        result = await userService.getAll();
+        // useUserManagement에서 자동으로 로드되므로 여기서는 처리하지 않음
+        return;
       } else {
-        result = await postService.getAll();
+        const result = await postService.getAll();
+        setData(result);
       }
-
-      setData(result);
-    } catch (error: any) {
+    } catch {
       showError('데이터를 불러오는데 실패했습니다');
     }
   };
@@ -51,7 +61,7 @@ export const ManagementPage: React.FC = () => {
   const handleCreate = async () => {
     try {
       if (entityType === 'user') {
-        await userService.create({
+        await createUser({
           username: formData.username,
           email: formData.email,
           role: formData.role || 'user',
@@ -65,14 +75,14 @@ export const ManagementPage: React.FC = () => {
           category: formData.category,
           status: formData.status || 'draft',
         });
+        await loadData();
+        showSuccess('게시글이 생성되었습니다');
       }
 
-      await loadData();
       setIsCreateModalOpen(false);
       setFormData({});
-      showSuccess(`${entityType === 'user' ? '사용자' : '게시글'}가 생성되었습니다`);
-    } catch (error: any) {
-      showError(error.message || '생성에 실패했습니다');
+    } catch {
+      // useUserManagement에서 이미 에러 처리를 하므로 여기서는 처리하지 않음
     }
   };
 
@@ -106,35 +116,35 @@ export const ManagementPage: React.FC = () => {
 
     try {
       if (entityType === 'user') {
-        await userService.update(selectedItem.id, formData);
+        await updateUser(selectedItem.id, formData);
       } else {
         await postService.update(selectedItem.id, formData);
+        await loadData();
+        showSuccess('게시글이 수정되었습니다');
       }
 
-      await loadData();
       setIsEditModalOpen(false);
       setFormData({});
       setSelectedItem(null);
-      showSuccess(`${entityType === 'user' ? '사용자' : '게시글'}가 수정되었습니다`);
-    } catch (error: any) {
-      showError(error.message || '수정에 실패했습니다');
+    } catch {
+      // useUserManagement에서 이미 에러 처리를 하므로 여기서는 처리하지 않음
     }
   };
 
   const handleDelete = async (id: number) => {
-    if (!confirm('정말 삭제하시겠습니까?')) return;
+    if (entityType === 'user') {
+      await deleteUser(id);
+    } else {
+      if (!confirm('정말 삭제하시겠습니까?')) return;
 
-    try {
-      if (entityType === 'user') {
-        await userService.delete(id);
-      } else {
+      try {
         await postService.delete(id);
+        await loadData();
+        showSuccess('삭제되었습니다');
+      } catch (error) {
+        const message = error instanceof Error ? error.message : '삭제에 실패했습니다';
+        showError(message);
       }
-
-      await loadData();
-      showSuccess('삭제되었습니다');
-    } catch (error: any) {
-      showError(error.message || '삭제에 실패했습니다');
     }
   };
 
@@ -156,8 +166,9 @@ export const ManagementPage: React.FC = () => {
         action === 'archive' ? '보관' :
         '복원';
       showSuccess(`${message}되었습니다`);
-    } catch (error: any) {
-      showError(error.message || '작업에 실패했습니다');
+    } catch (error) {
+      const message = error instanceof Error ? error.message : '작업에 실패했습니다';
+      showError(message);
     }
   };
 
