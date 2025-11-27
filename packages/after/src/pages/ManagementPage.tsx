@@ -6,6 +6,8 @@ import { userService } from '../services/userService';
 import { postService } from '../services/postService';
 import type { User } from '../domains/user/types';
 import type { Post } from '../domains/post/types';
+import { USER_ROLES, USER_STATUSES } from '../domains/user';
+import { POST_CATEGORIES } from '../domains/post';
 import '../styles/components.css';
 
 type EntityType = 'user' | 'post';
@@ -440,11 +442,7 @@ export const ManagementPage: React.FC = () => {
                     name="role"
                     value={formData.role || 'user'}
                     onChange={(value) => setFormData({ ...formData, role: value })}
-                    options={[
-                      { value: 'user', label: '사용자' },
-                      { value: 'moderator', label: '운영자' },
-                      { value: 'admin', label: '관리자' },
-                    ]}
+                    options={USER_ROLES}
                     label="역할"
                     size="md"
                   />
@@ -452,11 +450,7 @@ export const ManagementPage: React.FC = () => {
                     name="status"
                     value={formData.status || 'active'}
                     onChange={(value) => setFormData({ ...formData, status: value })}
-                    options={[
-                      { value: 'active', label: '활성' },
-                      { value: 'inactive', label: '비활성' },
-                      { value: 'suspended', label: '정지' },
-                    ]}
+                    options={USER_STATUSES}
                     label="상태"
                     size="md"
                   />
@@ -488,11 +482,7 @@ export const ManagementPage: React.FC = () => {
                     name="category"
                     value={formData.category || ''}
                     onChange={(value) => setFormData({ ...formData, category: value })}
-                    options={[
-                      { value: 'development', label: 'Development' },
-                      { value: 'design', label: 'Design' },
-                      { value: 'accessibility', label: 'Accessibility' },
-                    ]}
+                    options={POST_CATEGORIES}
                     label="카테고리"
                     placeholder="카테고리 선택"
                     size="md"
@@ -572,11 +562,7 @@ export const ManagementPage: React.FC = () => {
                     name="role"
                     value={formData.role || 'user'}
                     onChange={(value) => setFormData({ ...formData, role: value })}
-                    options={[
-                      { value: 'user', label: '사용자' },
-                      { value: 'moderator', label: '운영자' },
-                      { value: 'admin', label: '관리자' },
-                    ]}
+                    options={USER_ROLES}
                     label="역할"
                     size="md"
                   />
@@ -584,11 +570,7 @@ export const ManagementPage: React.FC = () => {
                     name="status"
                     value={formData.status || 'active'}
                     onChange={(value) => setFormData({ ...formData, status: value })}
-                    options={[
-                      { value: 'active', label: '활성' },
-                      { value: 'inactive', label: '비활성' },
-                      { value: 'suspended', label: '정지' },
-                    ]}
+                    options={USER_STATUSES}
                     label="상태"
                     size="md"
                   />
@@ -620,11 +602,7 @@ export const ManagementPage: React.FC = () => {
                     name="category"
                     value={formData.category || ''}
                     onChange={(value) => setFormData({ ...formData, category: value })}
-                    options={[
-                      { value: 'development', label: 'Development' },
-                      { value: 'design', label: 'Design' },
-                      { value: 'accessibility', label: 'Accessibility' },
-                    ]}
+                    options={POST_CATEGORIES}
                     label="카테고리"
                     placeholder="카테고리 선택"
                     size="md"
