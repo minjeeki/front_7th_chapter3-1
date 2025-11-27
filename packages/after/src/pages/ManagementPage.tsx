@@ -4,8 +4,8 @@ import { Alert, Table, Modal } from '../components/organisms';
 import { FormInput, FormSelect, FormTextarea } from '../components/molecules';
 import { userService } from '../services/userService';
 import { postService } from '../services/postService';
-import type { User } from '../services/userService';
-import type { Post } from '../services/postService';
+import type { User } from '../domains/user/types';
+import type { Post } from '../domains/post/types';
 import '../styles/components.css';
 
 type EntityType = 'user' | 'post';
