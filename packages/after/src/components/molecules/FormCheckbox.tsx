@@ -1,5 +1,3 @@
-import React from 'react';
-
 // Checkbox Component - Completely different approach again
 interface FormCheckboxProps {
   name: string;

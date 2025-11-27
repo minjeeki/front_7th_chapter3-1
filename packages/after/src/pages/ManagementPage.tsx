@@ -1,15 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '../components/atoms';
-import { Alert, Table, Modal } from '../components/organisms';
-import { FormInput, FormSelect, FormTextarea } from '../components/molecules';
+import { Alert, Modal } from '../components/organisms';
 import type { User } from '../domains/user/types';
 import type { Post } from '../domains/post/types';
-import { USER_ROLES, USER_STATUSES } from '../domains/user';
-import { POST_CATEGORIES, getPostTableColumns } from '../domains/post';
 import { useNotification, useUserManagement, usePostManagement } from '../hooks';
-import { UserStats } from '../features/users/components/UserStats';
-import { UserTable } from '../features/users/components/UserTable';
-import { PostStats } from '../features/posts/components/PostStats';
+import { UserStats, UserTable, UserForm } from '../features/users';
+import { PostStats, PostTable, PostForm } from '../features/posts';
 import '../styles/components.css';
 
 type EntityType = 'user' | 'post';
@@ -17,59 +13,33 @@ type Entity = User | Post;
 
 export const ManagementPage: React.FC = () => {
   const [entityType, setEntityType] = useState<EntityType>('post');
-  const [data, setData] = useState<Entity[]>([]);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<Entity | null>(null);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [formData, setFormData] = useState<any>({});
 
   const { notifications, showSuccess, showError, removeNotification } = useNotification();
   const { users, createUser, updateUser, deleteUser } = useUserManagement({ showSuccess, showError });
   const { posts, createPost, updatePost, deletePost, publishPost, archivePost, restorePost } = usePostManagement({ showSuccess, showError });
 
   useEffect(() => {
-    setFormData({});
     setIsCreateModalOpen(false);
     setIsEditModalOpen(false);
     setSelectedItem(null);
   }, [entityType]);
 
-  // users 데이터를 data에 동기화
-  useEffect(() => {
-    if (entityType === 'user') {
-      setData(users as Entity[]);
-    }
-  }, [users, entityType]);
-
-  // posts 데이터를 data에 동기화
-  useEffect(() => {
-    if (entityType === 'post') {
-      setData(posts as Entity[]);
-    }
-  }, [posts, entityType]);
-
-  const handleCreate = async () => {
+  const handleCreateUser = async (data: Parameters<typeof createUser>[0] | Parameters<typeof updateUser>[1]) => {
     try {
-      if (entityType === 'user') {
-        await createUser({
-          username: formData.username,
-          email: formData.email,
-          role: formData.role || 'user',
-          status: formData.status || 'active',
-        });
-      } else {
-        await createPost({
-          title: formData.title,
-          content: formData.content || '',
-          author: formData.author,
-          category: formData.category,
-          status: formData.status || 'draft',
-        });
-      }
-
+      await createUser(data as Parameters<typeof createUser>[0]);
       setIsCreateModalOpen(false);
-      setFormData({});
+    } catch {
+      // hooks에서 이미 에러 처리를 하므로 여기서는 처리하지 않음
+    }
+  };
+
+  const handleCreatePost = async (data: Parameters<typeof createPost>[0] | Parameters<typeof updatePost>[1]) => {
+    try {
+      await createPost(data as Parameters<typeof createPost>[0]);
+      setIsCreateModalOpen(false);
     } catch {
       // hooks에서 이미 에러 처리를 하므로 여기서는 처리하지 않음
     }
@@ -77,41 +47,27 @@ export const ManagementPage: React.FC = () => {
 
   const handleEdit = (item: Entity) => {
     setSelectedItem(item);
-
-    if (entityType === 'user') {
-      const user = item as User;
-      setFormData({
-        username: user.username,
-        email: user.email,
-        role: user.role,
-        status: user.status,
-      });
-    } else {
-      const post = item as Post;
-      setFormData({
-        title: post.title,
-        content: post.content,
-        author: post.author,
-        category: post.category,
-        status: post.status,
-      });
-    }
-
     setIsEditModalOpen(true);
   };
 
-  const handleUpdate = async () => {
+  const handleUpdateUser = async (data: Parameters<typeof updateUser>[1]) => {
     if (!selectedItem) return;
 
     try {
-      if (entityType === 'user') {
-        await updateUser(selectedItem.id, formData);
-      } else {
-        await updatePost(selectedItem.id, formData);
-      }
-
+      await updateUser(selectedItem.id, data);
       setIsEditModalOpen(false);
-      setFormData({});
+      setSelectedItem(null);
+    } catch {
+      // hooks에서 이미 에러 처리를 하므로 여기서는 처리하지 않음
+    }
+  };
+
+  const handleUpdatePost = async (data: Parameters<typeof updatePost>[1]) => {
+    if (!selectedItem) return;
+
+    try {
+      await updatePost(selectedItem.id, data);
+      setIsEditModalOpen(false);
       setSelectedItem(null);
     } catch {
       // hooks에서 이미 에러 처리를 하므로 여기서는 처리하지 않음
@@ -238,17 +194,15 @@ export const ManagementPage: React.FC = () => {
                   hover
                 />
               ) : (
-                <Table
-                  columns={getPostTableColumns()}
-                  data={data}
-                  striped
-                  hover
-                  entityType={entityType}
+                <PostTable
+                  posts={posts}
                   onEdit={handleEdit}
                   onDelete={handleDelete}
                   onPublish={(id) => handleStatusAction(id, 'publish')}
                   onArchive={(id) => handleStatusAction(id, 'archive')}
                   onRestore={(id) => handleStatusAction(id, 'restore')}
+                  striped
+                  hover
                 />
               )}
             </div>
@@ -261,231 +215,70 @@ export const ManagementPage: React.FC = () => {
           isOpen={isCreateModalOpen}
           onClose={() => {
             setIsCreateModalOpen(false);
-            setFormData({});
           }}
           title={`새 ${entityType === 'user' ? '사용자' : '게시글'} 만들기`}
           size="large"
-          showFooter
-          footerContent={
-            <>
-              <Button variant="secondary" size="md" onClick={() => {
-                setIsCreateModalOpen(false);
-                setFormData({});
-              }}>
-                취소
-              </Button>
-              <Button variant="primary" size="md" onClick={handleCreate}>
-                생성
-              </Button>
-            </>
-          }
+          showFooter={false}
         >
-          <div>
-            {entityType === 'user' ? (
-              <>
-                <FormInput
-                  name="username"
-                  value={formData.username || ''}
-                  onChange={(value) => setFormData({ ...formData, username: value })}
-                  label="사용자명"
-                  placeholder="사용자명을 입력하세요"
-                  required
-                  width="full"
-                  fieldType="username"
-                />
-                <FormInput
-                  name="email"
-                  value={formData.email || ''}
-                  onChange={(value) => setFormData({ ...formData, email: value })}
-                  label="이메일"
-                  placeholder="이메일을 입력하세요"
-                  type="email"
-                  required
-                  width="full"
-                  fieldType="email"
-                />
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-                  <FormSelect
-                    name="role"
-                    value={formData.role || 'user'}
-                    onChange={(value) => setFormData({ ...formData, role: value })}
-                    options={USER_ROLES}
-                    label="역할"
-                    size="md"
-                  />
-                  <FormSelect
-                    name="status"
-                    value={formData.status || 'active'}
-                    onChange={(value) => setFormData({ ...formData, status: value })}
-                    options={USER_STATUSES}
-                    label="상태"
-                    size="md"
-                  />
-                </div>
-              </>
-            ) : (
-              <>
-                <FormInput
-                  name="title"
-                  value={formData.title || ''}
-                  onChange={(value) => setFormData({ ...formData, title: value })}
-                  label="제목"
-                  placeholder="게시글 제목을 입력하세요"
-                  required
-                  width="full"
-                  fieldType="postTitle"
-                />
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-                  <FormInput
-                    name="author"
-                    value={formData.author || ''}
-                    onChange={(value) => setFormData({ ...formData, author: value })}
-                    label="작성자"
-                    placeholder="작성자명"
-                    required
-                    width="full"
-                  />
-                  <FormSelect
-                    name="category"
-                    value={formData.category || ''}
-                    onChange={(value) => setFormData({ ...formData, category: value })}
-                    options={POST_CATEGORIES}
-                    label="카테고리"
-                    placeholder="카테고리 선택"
-                    size="md"
-                  />
-                </div>
-                <FormTextarea
-                  name="content"
-                  value={formData.content || ''}
-                  onChange={(value) => setFormData({ ...formData, content: value })}
-                  label="내용"
-                  placeholder="게시글 내용을 입력하세요"
-                  rows={6}
-                />
-              </>
-            )}
-          </div>
+          {entityType === 'user' ? (
+            <UserForm
+              onSubmit={handleCreateUser}
+              onCancel={() => setIsCreateModalOpen(false)}
+              submitLabel="생성"
+              cancelLabel="취소"
+            />
+          ) : (
+            <PostForm
+              onSubmit={handleCreatePost}
+              onCancel={() => setIsCreateModalOpen(false)}
+              submitLabel="생성"
+              cancelLabel="취소"
+            />
+          )}
         </Modal>
 
         <Modal
           isOpen={isEditModalOpen}
           onClose={() => {
             setIsEditModalOpen(false);
-            setFormData({});
             setSelectedItem(null);
           }}
           title={`${entityType === 'user' ? '사용자' : '게시글'} 수정`}
           size="large"
-          showFooter
-          footerContent={
-            <>
-              <Button variant="secondary" size="md" onClick={() => {
-                setIsEditModalOpen(false);
-                setFormData({});
-                setSelectedItem(null);
-              }}>
-                취소
-              </Button>
-              <Button variant="primary" size="md" onClick={handleUpdate}>
-                수정 완료
-              </Button>
-            </>
-          }
+          showFooter={false}
         >
-          <div>
-            {selectedItem && (
+          {selectedItem && (
+            <div style={{ marginBottom: '16px' }}>
               <Alert variant="info">
                 ID: {selectedItem.id} | 생성일: {selectedItem.createdAt}
                 {entityType === 'post' && ` | 조회수: ${(selectedItem as Post).views}`}
               </Alert>
-            )}
+            </div>
+          )}
 
-            {entityType === 'user' ? (
-              <>
-                <FormInput
-                  name="username"
-                  value={formData.username || ''}
-                  onChange={(value) => setFormData({ ...formData, username: value })}
-                  label="사용자명"
-                  placeholder="사용자명을 입력하세요"
-                  required
-                  width="full"
-                  fieldType="username"
-                />
-                <FormInput
-                  name="email"
-                  value={formData.email || ''}
-                  onChange={(value) => setFormData({ ...formData, email: value })}
-                  label="이메일"
-                  placeholder="이메일을 입력하세요"
-                  type="email"
-                  required
-                  width="full"
-                  fieldType="email"
-                />
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-                  <FormSelect
-                    name="role"
-                    value={formData.role || 'user'}
-                    onChange={(value) => setFormData({ ...formData, role: value })}
-                    options={USER_ROLES}
-                    label="역할"
-                    size="md"
-                  />
-                  <FormSelect
-                    name="status"
-                    value={formData.status || 'active'}
-                    onChange={(value) => setFormData({ ...formData, status: value })}
-                    options={USER_STATUSES}
-                    label="상태"
-                    size="md"
-                  />
-                </div>
-              </>
-            ) : (
-              <>
-                <FormInput
-                  name="title"
-                  value={formData.title || ''}
-                  onChange={(value) => setFormData({ ...formData, title: value })}
-                  label="제목"
-                  placeholder="게시글 제목을 입력하세요"
-                  required
-                  width="full"
-                  fieldType="postTitle"
-                />
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-                  <FormInput
-                    name="author"
-                    value={formData.author || ''}
-                    onChange={(value) => setFormData({ ...formData, author: value })}
-                    label="작성자"
-                    placeholder="작성자명"
-                    required
-                    width="full"
-                  />
-                  <FormSelect
-                    name="category"
-                    value={formData.category || ''}
-                    onChange={(value) => setFormData({ ...formData, category: value })}
-                    options={POST_CATEGORIES}
-                    label="카테고리"
-                    placeholder="카테고리 선택"
-                    size="md"
-                  />
-                </div>
-                <FormTextarea
-                  name="content"
-                  value={formData.content || ''}
-                  onChange={(value) => setFormData({ ...formData, content: value })}
-                  label="내용"
-                  placeholder="게시글 내용을 입력하세요"
-                  rows={6}
-                />
-              </>
-            )}
-          </div>
+          {entityType === 'user' && selectedItem ? (
+            <UserForm
+              user={selectedItem as User}
+              onSubmit={handleUpdateUser}
+              onCancel={() => {
+                setIsEditModalOpen(false);
+                setSelectedItem(null);
+              }}
+              submitLabel="수정 완료"
+              cancelLabel="취소"
+            />
+          ) : selectedItem ? (
+            <PostForm
+              post={selectedItem as Post}
+              onSubmit={handleUpdatePost}
+              onCancel={() => {
+                setIsEditModalOpen(false);
+                setSelectedItem(null);
+              }}
+              submitLabel="수정 완료"
+              cancelLabel="취소"
+            />
+          ) : null}
         </Modal>
     </div>
   );
