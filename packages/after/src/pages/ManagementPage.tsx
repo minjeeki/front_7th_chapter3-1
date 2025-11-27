@@ -4,10 +4,11 @@ import { Alert, Table, Modal } from '../components/organisms';
 import { FormInput, FormSelect, FormTextarea } from '../components/molecules';
 import type { User } from '../domains/user/types';
 import type { Post } from '../domains/post/types';
-import { USER_ROLES, USER_STATUSES, getUserTableColumns } from '../domains/user';
+import { USER_ROLES, USER_STATUSES } from '../domains/user';
 import { POST_CATEGORIES, getPostTableColumns } from '../domains/post';
 import { useNotification, useUserManagement, usePostManagement } from '../hooks';
 import { UserStats } from '../features/users/components/UserStats';
+import { UserTable } from '../features/users/components/UserTable';
 import { PostStats } from '../features/posts/components/PostStats';
 import '../styles/components.css';
 
@@ -141,13 +142,6 @@ export const ManagementPage: React.FC = () => {
     }
   };
 
-  const renderTableColumns = () => {
-    if (entityType === 'user') {
-      return getUserTableColumns();
-    } else {
-      return getPostTableColumns();
-    }
-  };
 
   return (
     <div style={{ minHeight: '100vh', background: '#f0f0f0' }}>
@@ -235,18 +229,28 @@ export const ManagementPage: React.FC = () => {
             )}
 
             <div style={{ border: '1px solid #ddd', background: 'white', overflow: 'auto' }}>
-              <Table
-                columns={renderTableColumns()}
-                data={data}
-                striped
-                hover
-                entityType={entityType}
-                onEdit={handleEdit}
-                onDelete={handleDelete}
-                onPublish={(id) => handleStatusAction(id, 'publish')}
-                onArchive={(id) => handleStatusAction(id, 'archive')}
-                onRestore={(id) => handleStatusAction(id, 'restore')}
-              />
+              {entityType === 'user' ? (
+                <UserTable
+                  users={users}
+                  onEdit={handleEdit}
+                  onDelete={handleDelete}
+                  striped
+                  hover
+                />
+              ) : (
+                <Table
+                  columns={getPostTableColumns()}
+                  data={data}
+                  striped
+                  hover
+                  entityType={entityType}
+                  onEdit={handleEdit}
+                  onDelete={handleDelete}
+                  onPublish={(id) => handleStatusAction(id, 'publish')}
+                  onArchive={(id) => handleStatusAction(id, 'archive')}
+                  onRestore={(id) => handleStatusAction(id, 'restore')}
+                />
+              )}
             </div>
           </div>
         </div>
