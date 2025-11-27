@@ -1,12 +1,15 @@
 import { useState, useCallback, useEffect } from 'react';
 import { postService } from '../services/postService';
 import type { Post, CreatePostInput, UpdatePostInput } from '../domains/post/types';
-import { useNotification } from './useNotification';
 
-export const usePostManagement = () => {
+interface UsePostManagementOptions {
+  showSuccess: (message: string) => void;
+  showError: (message: string) => void;
+}
+
+export const usePostManagement = ({ showSuccess, showError }: UsePostManagementOptions) => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(false);
-  const { showSuccess, showError } = useNotification();
 
   const loadPosts = useCallback(async () => {
     setLoading(true);

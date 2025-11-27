@@ -1,12 +1,15 @@
 import { useState, useCallback, useEffect } from 'react';
 import { userService } from '../services/userService';
 import type { User, CreateUserInput, UpdateUserInput } from '../domains/user/types';
-import { useNotification } from './useNotification';
 
-export const useUserManagement = () => {
+interface UseUserManagementOptions {
+  showSuccess: (message: string) => void;
+  showError: (message: string) => void;
+}
+
+export const useUserManagement = ({ showSuccess, showError }: UseUserManagementOptions) => {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(false);
-  const { showSuccess, showError } = useNotification();
 
   const loadUsers = useCallback(async () => {
     setLoading(true);

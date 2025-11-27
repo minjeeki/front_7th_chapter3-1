@@ -23,9 +23,9 @@ export const ManagementPage: React.FC = () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [formData, setFormData] = useState<any>({});
 
-  const { notifications, removeNotification } = useNotification();
-  const { users, createUser, updateUser, deleteUser } = useUserManagement();
-  const { posts, createPost, updatePost, deletePost, publishPost, archivePost, restorePost } = usePostManagement();
+  const { notifications, showSuccess, showError, removeNotification } = useNotification();
+  const { users, createUser, updateUser, deleteUser } = useUserManagement({ showSuccess, showError });
+  const { posts, createPost, updatePost, deletePost, publishPost, archivePost, restorePost } = usePostManagement({ showSuccess, showError });
 
   useEffect(() => {
     setFormData({});
