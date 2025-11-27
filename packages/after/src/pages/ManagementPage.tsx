@@ -8,6 +8,7 @@ import type { User } from '../domains/user/types';
 import type { Post } from '../domains/post/types';
 import { USER_ROLES, USER_STATUSES, calculateUserStats, getUserTableColumns } from '../domains/user';
 import { POST_CATEGORIES, calculatePostStats, getPostTableColumns } from '../domains/post';
+import { useNotification } from '../hooks/useNotification';
 import '../styles/components.css';
 
 type EntityType = 'user' | 'post';
@@ -19,12 +20,9 @@ export const ManagementPage: React.FC = () => {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<Entity | null>(null);
-  const [showSuccessAlert, setShowSuccessAlert] = useState(false);
-  const [alertMessage, setAlertMessage] = useState('');
-  const [showErrorAlert, setShowErrorAlert] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
-
   const [formData, setFormData] = useState<any>({});
+
+  const { notifications, showSuccess, showError, removeNotification } = useNotification();
 
   useEffect(() => {
     loadData();
@@ -46,8 +44,7 @@ export const ManagementPage: React.FC = () => {
 
       setData(result);
     } catch (error: any) {
-      setErrorMessage('데이터를 불러오는데 실패했습니다');
-      setShowErrorAlert(true);
+      showError('데이터를 불러오는데 실패했습니다');
     }
   };
 
@@ -73,11 +70,9 @@ export const ManagementPage: React.FC = () => {
       await loadData();
       setIsCreateModalOpen(false);
       setFormData({});
-      setAlertMessage(`${entityType === 'user' ? '사용자' : '게시글'}가 생성되었습니다`);
-      setShowSuccessAlert(true);
+      showSuccess(`${entityType === 'user' ? '사용자' : '게시글'}가 생성되었습니다`);
     } catch (error: any) {
-      setErrorMessage(error.message || '생성에 실패했습니다');
-      setShowErrorAlert(true);
+      showError(error.message || '생성에 실패했습니다');
     }
   };
 
@@ -120,11 +115,9 @@ export const ManagementPage: React.FC = () => {
       setIsEditModalOpen(false);
       setFormData({});
       setSelectedItem(null);
-      setAlertMessage(`${entityType === 'user' ? '사용자' : '게시글'}가 수정되었습니다`);
-      setShowSuccessAlert(true);
+      showSuccess(`${entityType === 'user' ? '사용자' : '게시글'}가 수정되었습니다`);
     } catch (error: any) {
-      setErrorMessage(error.message || '수정에 실패했습니다');
-      setShowErrorAlert(true);
+      showError(error.message || '수정에 실패했습니다');
     }
   };
 
@@ -139,11 +132,9 @@ export const ManagementPage: React.FC = () => {
       }
 
       await loadData();
-      setAlertMessage('삭제되었습니다');
-      setShowSuccessAlert(true);
+      showSuccess('삭제되었습니다');
     } catch (error: any) {
-      setErrorMessage(error.message || '삭제에 실패했습니다');
-      setShowErrorAlert(true);
+      showError(error.message || '삭제에 실패했습니다');
     }
   };
 
@@ -164,11 +155,9 @@ export const ManagementPage: React.FC = () => {
         action === 'publish' ? '게시' :
         action === 'archive' ? '보관' :
         '복원';
-      setAlertMessage(`${message}되었습니다`);
-      setShowSuccessAlert(true);
+      showSuccess(`${message}되었습니다`);
     } catch (error: any) {
-      setErrorMessage(error.message || '작업에 실패했습니다');
-      setShowErrorAlert(true);
+      showError(error.message || '작업에 실패했습니다');
     }
   };
 
@@ -257,29 +246,17 @@ export const ManagementPage: React.FC = () => {
               </Button>
             </div>
 
-            {showSuccessAlert && (
-              <div style={{ marginBottom: '10px' }}>
+            {notifications.map((notification) => (
+              <div key={notification.id} style={{ marginBottom: '10px' }}>
                 <Alert
-                  variant="success"
-                  title="성공"
-                  onClose={() => setShowSuccessAlert(false)}
+                  variant={notification.type === 'success' ? 'success' : 'error'}
+                  title={notification.type === 'success' ? '성공' : '오류'}
+                  onClose={() => removeNotification(notification.id)}
                 >
-                  {alertMessage}
+                  {notification.message}
                 </Alert>
               </div>
-            )}
-
-            {showErrorAlert && (
-              <div style={{ marginBottom: '10px' }}>
-                <Alert
-                  variant="error"
-                  title="오류"
-                  onClose={() => setShowErrorAlert(false)}
-                >
-                  {errorMessage}
-                </Alert>
-              </div>
-            )}
+            ))}
 
             <div style={{
               display: 'grid',
