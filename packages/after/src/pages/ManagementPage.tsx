@@ -4,9 +4,11 @@ import { Alert, Table, Modal } from '../components/organisms';
 import { FormInput, FormSelect, FormTextarea } from '../components/molecules';
 import type { User } from '../domains/user/types';
 import type { Post } from '../domains/post/types';
-import { USER_ROLES, USER_STATUSES, calculateUserStats, getUserTableColumns } from '../domains/user';
-import { POST_CATEGORIES, calculatePostStats, getPostTableColumns } from '../domains/post';
+import { USER_ROLES, USER_STATUSES, getUserTableColumns } from '../domains/user';
+import { POST_CATEGORIES, getPostTableColumns } from '../domains/post';
 import { useNotification, useUserManagement, usePostManagement } from '../hooks';
+import { UserStats } from '../features/users/components/UserStats';
+import { PostStats } from '../features/posts/components/PostStats';
 import '../styles/components.css';
 
 type EntityType = 'user' | 'post';
@@ -139,14 +141,6 @@ export const ManagementPage: React.FC = () => {
     }
   };
 
-  const getStats = () => {
-    if (entityType === 'user') {
-      return calculateUserStats(data as User[]);
-    } else {
-      return calculatePostStats(data as Post[]);
-    }
-  };
-
   const renderTableColumns = () => {
     if (entityType === 'user') {
       return getUserTableColumns();
@@ -154,8 +148,6 @@ export const ManagementPage: React.FC = () => {
       return getPostTableColumns();
     }
   };
-
-  const stats = getStats();
 
   return (
     <div style={{ minHeight: '100vh', background: '#f0f0f0' }}>
@@ -236,62 +228,11 @@ export const ManagementPage: React.FC = () => {
               </div>
             ))}
 
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))',
-              gap: '10px',
-              marginBottom: '15px'
-            }}>
-              <div style={{
-                padding: '12px 15px',
-                background: '#e3f2fd',
-                border: '1px solid #90caf9',
-                borderRadius: '3px'
-              }}>
-                <div style={{ fontSize: '12px', color: '#666', marginBottom: '4px' }}>전체</div>
-                <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#1976d2' }}>{stats.total}</div>
-              </div>
-
-              <div style={{
-                padding: '12px 15px',
-                background: '#e8f5e9',
-                border: '1px solid #81c784',
-                borderRadius: '3px'
-              }}>
-                <div style={{ fontSize: '12px', color: '#666', marginBottom: '4px' }}>{stats.stat1.label}</div>
-                <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#388e3c' }}>{stats.stat1.value}</div>
-              </div>
-
-              <div style={{
-                padding: '12px 15px',
-                background: '#fff3e0',
-                border: '1px solid #ffb74d',
-                borderRadius: '3px'
-              }}>
-                <div style={{ fontSize: '12px', color: '#666', marginBottom: '4px' }}>{stats.stat2.label}</div>
-                <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#f57c00' }}>{stats.stat2.value}</div>
-              </div>
-
-              <div style={{
-                padding: '12px 15px',
-                background: '#ffebee',
-                border: '1px solid #e57373',
-                borderRadius: '3px'
-              }}>
-                <div style={{ fontSize: '12px', color: '#666', marginBottom: '4px' }}>{stats.stat3.label}</div>
-                <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#d32f2f' }}>{stats.stat3.value}</div>
-              </div>
-
-              <div style={{
-                padding: '12px 15px',
-                background: '#f5f5f5',
-                border: '1px solid #bdbdbd',
-                borderRadius: '3px'
-              }}>
-                <div style={{ fontSize: '12px', color: '#666', marginBottom: '4px' }}>{stats.stat4.label}</div>
-                <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#424242' }}>{stats.stat4.value}</div>
-              </div>
-            </div>
+            {entityType === 'user' ? (
+              <UserStats users={users} />
+            ) : (
+              <PostStats posts={posts} />
+            )}
 
             <div style={{ border: '1px solid #ddd', background: 'white', overflow: 'auto' }}>
               <Table
