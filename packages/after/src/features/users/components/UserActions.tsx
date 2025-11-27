@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button } from '../../../components/atoms';
+import { Button } from '../../../components/ui/button';
 import type { User } from '../../../domains/user/types';
 
 interface UserActionsProps {
@@ -13,13 +13,13 @@ export const UserActions: React.FC<UserActionsProps> = ({ user, onEdit, onDelete
   const canDelete = user.role !== 'admin';
 
   return (
-    <div style={{ display: 'flex', gap: '8px' }}>
-      <Button size="sm" variant="primary" onClick={() => onEdit(user)}>
+    <div className="flex gap-2">
+      <Button size="sm" variant="default" onClick={() => onEdit(user)}>
         수정
       </Button>
       <Button
         size="sm"
-        variant="danger"
+        variant="destructive"
         onClick={() => onDelete(user.id)}
         disabled={!canDelete}
       >

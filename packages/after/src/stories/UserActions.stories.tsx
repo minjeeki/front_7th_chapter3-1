@@ -1,7 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { fn } from 'storybook/test';
 import { UserActions } from '../features/users/components/UserActions';
-import type { User } from '../domains/user/types';
 
 const meta = {
   title: 'Features/Users/UserActions',
