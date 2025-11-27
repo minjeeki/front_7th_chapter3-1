@@ -6,8 +6,8 @@ import { userService } from '../services/userService';
 import { postService } from '../services/postService';
 import type { User } from '../domains/user/types';
 import type { Post } from '../domains/post/types';
-import { USER_ROLES, USER_STATUSES } from '../domains/user';
-import { POST_CATEGORIES } from '../domains/post';
+import { USER_ROLES, USER_STATUSES, calculateUserStats, getUserTableColumns } from '../domains/user';
+import { POST_CATEGORIES, calculatePostStats, getPostTableColumns } from '../domains/post';
 import '../styles/components.css';
 
 type EntityType = 'user' | 'post';
@@ -174,50 +174,17 @@ export const ManagementPage: React.FC = () => {
 
   const getStats = () => {
     if (entityType === 'user') {
-      const users = data as User[];
-      return {
-        total: users.length,
-        stat1: { label: '활성', value: users.filter(u => u.status === 'active').length, color: '#2e7d32' },
-        stat2: { label: '비활성', value: users.filter(u => u.status === 'inactive').length, color: '#ed6c02' },
-        stat3: { label: '정지', value: users.filter(u => u.status === 'suspended').length, color: '#d32f2f' },
-        stat4: { label: '관리자', value: users.filter(u => u.role === 'admin').length, color: '#1976d2' },
-      };
+      return calculateUserStats(data as User[]);
     } else {
-      const posts = data as Post[];
-      return {
-        total: posts.length,
-        stat1: { label: '게시됨', value: posts.filter(p => p.status === 'published').length, color: '#2e7d32' },
-        stat2: { label: '임시저장', value: posts.filter(p => p.status === 'draft').length, color: '#ed6c02' },
-        stat3: { label: '보관됨', value: posts.filter(p => p.status === 'archived').length, color: 'rgba(0, 0, 0, 0.6)' },
-        stat4: { label: '총 조회수', value: posts.reduce((sum, p) => sum + p.views, 0), color: '#1976d2' },
-      };
+      return calculatePostStats(data as Post[]);
     }
   };
 
-  // 🚨 Table 컴포넌트에 로직을 위임하여 간소화
   const renderTableColumns = () => {
     if (entityType === 'user') {
-      return [
-        { key: 'id', header: 'ID', width: '60px' },
-        { key: 'username', header: '사용자명', width: '150px' },
-        { key: 'email', header: '이메일' },
-        { key: 'role', header: '역할', width: '120px' },
-        { key: 'status', header: '상태', width: '120px' },
-        { key: 'createdAt', header: '생성일', width: '120px' },
-        { key: 'lastLogin', header: '마지막 로그인', width: '140px' },
-        { key: 'actions', header: '관리', width: '200px' },
-      ];
+      return getUserTableColumns();
     } else {
-      return [
-        { key: 'id', header: 'ID', width: '60px' },
-        { key: 'title', header: '제목' },
-        { key: 'author', header: '작성자', width: '120px' },
-        { key: 'category', header: '카테고리', width: '140px' },
-        { key: 'status', header: '상태', width: '120px' },
-        { key: 'views', header: '조회수', width: '100px' },
-        { key: 'createdAt', header: '작성일', width: '120px' },
-        { key: 'actions', header: '관리', width: '250px' },
-      ];
+      return getPostTableColumns();
     }
   };
 
