@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Badge } from '../atoms/Badge';
 import { Button } from '../atoms/Button';
+import { UserActions } from '../../features/users/components/UserActions';
 
 interface Column {
   key: string;
@@ -125,14 +126,11 @@ export const Table: React.FC<TableProps> = ({
       }
       if (columnKey === 'actions') {
         return (
-          <div style={{ display: 'flex', gap: '8px' }}>
-            <Button size="sm" variant="primary" onClick={() => onEdit?.(row)}>
-              수정
-            </Button>
-            <Button size="sm" variant="danger" onClick={() => onDelete?.(row.id)}>
-              삭제
-            </Button>
-          </div>
+          <UserActions
+            user={row}
+            onEdit={(user) => onEdit?.(user)}
+            onDelete={(id) => onDelete?.(id)}
+          />
         );
       }
     }
