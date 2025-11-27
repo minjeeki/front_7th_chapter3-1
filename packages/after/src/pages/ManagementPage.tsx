@@ -6,9 +6,7 @@ import type { User } from '../domains/user/types';
 import type { Post } from '../domains/post/types';
 import { USER_ROLES, USER_STATUSES, calculateUserStats, getUserTableColumns } from '../domains/user';
 import { POST_CATEGORIES, calculatePostStats, getPostTableColumns } from '../domains/post';
-import { useNotification } from '../hooks/useNotification';
-import { useUserManagement } from '../hooks/useUserManagement';
-import { usePostManagement } from '../hooks/usePostManagement';
+import { useNotification, useUserManagement, usePostManagement } from '../hooks';
 import '../styles/components.css';
 
 type EntityType = 'user' | 'post';
