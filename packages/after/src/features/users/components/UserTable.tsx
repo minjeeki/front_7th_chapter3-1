@@ -1,5 +1,7 @@
 import React from 'react';
-import { Table } from '../../../components/organisms/Table';
+import { TableContainer } from '../../../components/organisms/TableContainer';
+import { Badge } from '../../../components/atoms/Badge';
+import { UserActions } from './UserActions';
 import { getUserTableColumns } from '../../../domains/user/mappers';
 import type { User } from '../../../domains/user/types';
 
@@ -24,17 +26,47 @@ export const UserTable: React.FC<UserTableProps> = ({
 }) => {
   const columns = getUserTableColumns();
 
+  const renderCell = (row: User, columnKey: string): React.ReactNode => {
+    const value = row[columnKey as keyof User];
+
+    if (columnKey === 'role') {
+      return <Badge userRole={value as User['role']} showIcon />;
+    }
+
+    if (columnKey === 'status') {
+      // User status를 Badge status로 변환
+      const badgeStatus =
+        value === 'active' ? 'published' :
+        value === 'inactive' ? 'draft' : 'rejected';
+      return <Badge status={badgeStatus} showIcon />;
+    }
+
+    if (columnKey === 'lastLogin') {
+      return value || '-';
+    }
+
+    if (columnKey === 'actions') {
+      return (
+        <UserActions
+          user={row}
+          onEdit={onEdit}
+          onDelete={onDelete}
+        />
+      );
+    }
+
+    return value;
+  };
+
   return (
-    <Table
+    <TableContainer<User>
       columns={columns}
       data={users}
       striped={striped}
       hover={hover}
       searchable={searchable}
       sortable={sortable}
-      entityType="user"
-      onEdit={onEdit}
-      onDelete={onDelete}
+      renderCell={renderCell}
     />
   );
 };

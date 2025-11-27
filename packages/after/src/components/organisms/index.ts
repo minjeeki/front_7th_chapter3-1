@@ -1,4 +1,4 @@
 export { Alert } from './Alert';
-export { Table } from './Table';
+export { TableContainer } from './TableContainer';
 export { Modal } from './Modal';
 export { Header } from './Header';
