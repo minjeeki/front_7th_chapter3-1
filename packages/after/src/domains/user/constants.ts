@@ -12,3 +12,6 @@ export const USER_STATUSES: { value: UserStatus; label: string }[] = [
   { value: 'suspended', label: '정지' },
 ];
 
+// 검증에 사용되는 상수
+export const RESERVED_USERNAMES = ['admin', 'root', 'system', 'administrator'];
+export const ALLOWED_EMAIL_DOMAINS = ['@company.com', '@example.com'];

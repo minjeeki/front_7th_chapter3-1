@@ -12,3 +12,5 @@ export const POST_STATUSES: { value: PostStatus; label: string }[] = [
   { value: 'archived', label: '보관됨' },
 ];
 
+// 검증에 사용되는 상수
+export const BANNED_WORDS = ['광고', '스팸', '홍보'];
