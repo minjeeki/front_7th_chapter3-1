@@ -19,13 +19,13 @@ interface DialogContainerProps {
    */
   title: string;
   /**
-   * Dialog 열림/닫힘 상태
+   * Dialog 열림/닫힘 상태 (제공되지 않으면 uncontrolled mode)
    */
-  open: boolean;
+  open?: boolean;
   /**
-   * Dialog 상태 변경 핸들러
+   * Dialog 상태 변경 핸들러 (제공되지 않으면 uncontrolled mode)
    */
-  onOpenChange: (open: boolean) => void;
+  onOpenChange?: (open: boolean) => void;
   /**
    * Dialog 내용
    */
@@ -57,7 +57,7 @@ export const DialogContainer: React.FC<DialogContainerProps> = React.memo(({
           {trigger}
         </DialogTrigger>
       )}
-      {(!lazyMount || open) && (
+      {(!lazyMount || open === undefined || open) && (
         <DialogContent className={cn('max-w-2xl', contentClassName)}>
           <DialogHeader>
             <DialogTitle>{title}</DialogTitle>

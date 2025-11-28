@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   Alert,
   AlertTitle,
@@ -6,11 +6,15 @@ import {
 } from '../components/ui/alert';
 import { Button } from '../components/ui/button';
 import { DialogContainer } from '../components/organisms/DialogContainer';
+import { UserForm } from '../features/users/components/UserForm';
+import { PostForm } from '../features/posts/components/PostForm';
 import type { User } from '../domains/user/types';
 import type { Post } from '../domains/post/types';
+import type { CreateUserFormData, UpdateUserFormData } from '../domains/user/validations';
+import type { CreatePostFormData, UpdatePostFormData } from '../domains/post/validations';
 import { useNotification, useUserManagement, usePostManagement } from '../hooks';
-import { UserStats, UserTable, UserForm } from '../features/users';
-import { PostStats, PostTable, PostForm } from '../features/posts';
+import { UserStats, UserTable } from '../features/users';
+import { PostStats, PostTable } from '../features/posts';
 import '../styles/components.css';
 import { XIcon } from 'lucide-react';
 
@@ -27,57 +31,36 @@ export const ManagementPage: React.FC = () => {
   const { users, createUser, updateUser, deleteUser } = useUserManagement({ showSuccess, showError });
   const { posts, createPost, updatePost, deletePost, publishPost, archivePost, restorePost } = usePostManagement({ showSuccess, showError });
 
-  useEffect(() => {
-    setIsCreateModalOpen(false);
-    setIsEditModalOpen(false);
-    setSelectedItem(null);
-  }, [entityType]);
-
-  const handleCreateUser = async (data: Parameters<typeof createUser>[0] | Parameters<typeof updateUser>[1]) => {
-    try {
-      await createUser(data as Parameters<typeof createUser>[0]);
-      setIsCreateModalOpen(false);
-    } catch {
-      // hooks에서 이미 에러 처리를 하므로 여기서는 처리하지 않음
-    }
-  };
-
-  const handleCreatePost = async (data: Parameters<typeof createPost>[0] | Parameters<typeof updatePost>[1]) => {
-    try {
-      await createPost(data as Parameters<typeof createPost>[0]);
-      setIsCreateModalOpen(false);
-    } catch {
-      // hooks에서 이미 에러 처리를 하므로 여기서는 처리하지 않음
-    }
-  };
-
-  const handleEdit = (item: Entity) => {
+  const openEditModal = (item: Entity) => {
     setSelectedItem(item);
     setIsEditModalOpen(true);
   };
 
-  const handleUpdateUser = async (data: Parameters<typeof updateUser>[1]) => {
-    if (!selectedItem) return;
-
-    try {
-      await updateUser(selectedItem.id, data);
-      setIsEditModalOpen(false);
-      setSelectedItem(null);
-    } catch {
-      // hooks에서 이미 에러 처리를 하므로 여기서는 처리하지 않음
+  // 공통 생성 핸들러
+  const handleCreate = async (
+    data: CreateUserFormData | UpdateUserFormData | CreatePostFormData | UpdatePostFormData
+  ) => {
+    if (entityType === 'user') {
+      await createUser(data as CreateUserFormData);
+    } else {
+      await createPost(data as CreatePostFormData);
     }
+    setIsCreateModalOpen(false);
   };
 
-  const handleUpdatePost = async (data: Parameters<typeof updatePost>[1]) => {
+  // 공통 수정 핸들러
+  const handleUpdate = async (
+    data: CreateUserFormData | UpdateUserFormData | CreatePostFormData | UpdatePostFormData
+  ) => {
     if (!selectedItem) return;
-
-    try {
-      await updatePost(selectedItem.id, data);
-      setIsEditModalOpen(false);
-      setSelectedItem(null);
-    } catch {
-      // hooks에서 이미 에러 처리를 하므로 여기서는 처리하지 않음
+    
+    if (entityType === 'user') {
+      await updateUser(selectedItem.id, data as UpdateUserFormData);
+    } else {
+      await updatePost(selectedItem.id, data as UpdatePostFormData);
     }
+    setIsEditModalOpen(false);
+    setSelectedItem(null);
   };
 
   const handleDelete = async (id: number) => {
@@ -145,15 +128,13 @@ export const ManagementPage: React.FC = () => {
               >
                 {entityType === 'user' ? (
                   <UserForm
-                    onSubmit={handleCreateUser}
-                    onCancel={() => setIsCreateModalOpen(false)}
+                    onSubmit={handleCreate}
                     submitLabel="생성"
                     cancelLabel="취소"
                   />
                 ) : (
                   <PostForm
-                    onSubmit={handleCreatePost}
-                    onCancel={() => setIsCreateModalOpen(false)}
+                    onSubmit={handleCreate}
                     submitLabel="생성"
                     cancelLabel="취소"
                   />
@@ -193,7 +174,7 @@ export const ManagementPage: React.FC = () => {
               {entityType === 'user' ? (
                 <UserTable
                   users={users}
-                  onEdit={handleEdit}
+                  onEdit={openEditModal}
                   onDelete={handleDelete}
                   striped
                   hover
@@ -201,7 +182,7 @@ export const ManagementPage: React.FC = () => {
               ) : (
                 <PostTable
                   posts={posts}
-                  onEdit={handleEdit}
+                  onEdit={openEditModal}
                   onDelete={handleDelete}
                   onPublish={(id) => handleStatusAction(id, 'publish')}
                   onArchive={(id) => handleStatusAction(id, 'archive')}
@@ -220,8 +201,8 @@ export const ManagementPage: React.FC = () => {
         title={entityType === 'user' ? '사용자 수정' : '게시글 수정'}
         open={isEditModalOpen}
         onOpenChange={(open) => {
-          setIsEditModalOpen(open);
           if (!open) {
+            setIsEditModalOpen(false);
             setSelectedItem(null);
           }
         }}
@@ -236,29 +217,21 @@ export const ManagementPage: React.FC = () => {
             </Alert>
           </div>
         )}
-        {entityType === 'user' && selectedItem ? (
+        {entityType === 'user' ? (
           <UserForm
             user={selectedItem as User}
-            onSubmit={handleUpdateUser}
-            onCancel={() => {
-              setIsEditModalOpen(false);
-              setSelectedItem(null);
-            }}
+            onSubmit={handleUpdate}
             submitLabel="수정 완료"
             cancelLabel="취소"
           />
-        ) : selectedItem ? (
+        ) : (
           <PostForm
             post={selectedItem as Post}
-            onSubmit={handleUpdatePost}
-            onCancel={() => {
-              setIsEditModalOpen(false);
-              setSelectedItem(null);
-            }}
+            onSubmit={handleUpdate}
             submitLabel="수정 완료"
             cancelLabel="취소"
           />
-        ) : null}
+        )}
       </DialogContainer>
     </div>
   );
