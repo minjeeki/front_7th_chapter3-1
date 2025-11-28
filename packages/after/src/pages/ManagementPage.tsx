@@ -1,16 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from '../components/ui/dialog';
-import {
   Alert,
   AlertTitle,
   AlertDescription,
 } from '../components/ui/alert';
 import { Button } from '../components/ui/button';
+import { DialogContainer } from '../components/organisms/DialogContainer';
 import type { User } from '../domains/user/types';
 import type { Post } from '../domains/post/types';
 import { useNotification, useUserManagement, usePostManagement } from '../hooks';
@@ -142,9 +137,28 @@ export const ManagementPage: React.FC = () => {
 
           <div>
             <div className="mb-4 text-right">
-              <Button onClick={() => setIsCreateModalOpen(true)}>
-                새로 만들기
-              </Button>
+              <DialogContainer
+                trigger={<Button>새로 만들기</Button>}
+                title={entityType === 'user' ? '새 사용자 만들기' : '새 게시글 만들기'}
+                open={isCreateModalOpen}
+                onOpenChange={setIsCreateModalOpen}
+              >
+                {entityType === 'user' ? (
+                  <UserForm
+                    onSubmit={handleCreateUser}
+                    onCancel={() => setIsCreateModalOpen(false)}
+                    submitLabel="생성"
+                    cancelLabel="취소"
+                  />
+                ) : (
+                  <PostForm
+                    onSubmit={handleCreatePost}
+                    onCancel={() => setIsCreateModalOpen(false)}
+                    submitLabel="생성"
+                    cancelLabel="취소"
+                  />
+                )}
+              </DialogContainer>
             </div>
 
             {notifications.map((notification) => (
@@ -202,79 +216,50 @@ export const ManagementPage: React.FC = () => {
 
       </div>
 
-        <Dialog open={isCreateModalOpen} onOpenChange={setIsCreateModalOpen}>
-          <DialogContent className="max-w-2xl">
-            <DialogHeader>
-              <DialogTitle>
-                새 {entityType === 'user' ? '사용자' : '게시글'} 만들기
-              </DialogTitle>
-            </DialogHeader>
-            {entityType === 'user' ? (
-              <UserForm
-                onSubmit={handleCreateUser}
-                onCancel={() => setIsCreateModalOpen(false)}
-                submitLabel="생성"
-                cancelLabel="취소"
-              />
-            ) : (
-              <PostForm
-                onSubmit={handleCreatePost}
-                onCancel={() => setIsCreateModalOpen(false)}
-                submitLabel="생성"
-                cancelLabel="취소"
-              />
-            )}
-          </DialogContent>
-        </Dialog>
-
-        <Dialog open={isEditModalOpen} onOpenChange={(open) => {
+      <DialogContainer
+        title={entityType === 'user' ? '사용자 수정' : '게시글 수정'}
+        open={isEditModalOpen}
+        onOpenChange={(open) => {
           setIsEditModalOpen(open);
           if (!open) {
             setSelectedItem(null);
           }
-        }}>
-          <DialogContent className="max-w-2xl">
-            <DialogHeader>
-              <DialogTitle>
-                {entityType === 'user' ? '사용자' : '게시글'} 수정
-              </DialogTitle>
-            </DialogHeader>
-            {selectedItem && (
-              <div className="mb-4">
-                <Alert variant="default">
-                  <AlertDescription>
-                    ID: {selectedItem.id} | 생성일: {selectedItem.createdAt}
-                    {entityType === 'post' && ` | 조회수: ${(selectedItem as Post).views}`}
-                  </AlertDescription>
-                </Alert>
-              </div>
-            )}
-
-            {entityType === 'user' && selectedItem ? (
-              <UserForm
-                user={selectedItem as User}
-                onSubmit={handleUpdateUser}
-                onCancel={() => {
-                  setIsEditModalOpen(false);
-                  setSelectedItem(null);
-                }}
-                submitLabel="수정 완료"
-                cancelLabel="취소"
-              />
-            ) : selectedItem ? (
-              <PostForm
-                post={selectedItem as Post}
-                onSubmit={handleUpdatePost}
-                onCancel={() => {
-                  setIsEditModalOpen(false);
-                  setSelectedItem(null);
-                }}
-                submitLabel="수정 완료"
-                cancelLabel="취소"
-              />
-            ) : null}
-          </DialogContent>
-        </Dialog>
+        }}
+      >
+        {selectedItem && (
+          <div className="mb-4">
+            <Alert variant="default">
+              <AlertDescription>
+                ID: {selectedItem.id} | 생성일: {selectedItem.createdAt}
+                {entityType === 'post' && ` | 조회수: ${(selectedItem as Post).views}`}
+              </AlertDescription>
+            </Alert>
+          </div>
+        )}
+        {entityType === 'user' && selectedItem ? (
+          <UserForm
+            user={selectedItem as User}
+            onSubmit={handleUpdateUser}
+            onCancel={() => {
+              setIsEditModalOpen(false);
+              setSelectedItem(null);
+            }}
+            submitLabel="수정 완료"
+            cancelLabel="취소"
+          />
+        ) : selectedItem ? (
+          <PostForm
+            post={selectedItem as Post}
+            onSubmit={handleUpdatePost}
+            onCancel={() => {
+              setIsEditModalOpen(false);
+              setSelectedItem(null);
+            }}
+            submitLabel="수정 완료"
+            cancelLabel="취소"
+          />
+        ) : null}
+      </DialogContainer>
     </div>
   );
 };
