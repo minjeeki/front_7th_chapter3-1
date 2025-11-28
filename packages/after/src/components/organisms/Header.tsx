@@ -2,101 +2,34 @@ import React from 'react';
 
 export const Header: React.FC = () => {
   return (
-    <header style={{
-      backgroundColor: '#ffffff',
-      borderBottom: '1px solid #e5e7eb',
-      boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
-      position: 'sticky',
-      top: 0,
-      zIndex: 1000,
-    }}>
-      <div style={{
-        maxWidth: '1400px',
-        margin: '0 auto',
-        padding: '0 24px',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        height: '64px',
-      }}>
+    <header className="bg-white border-b border-gray-200 shadow-sm sticky top-0 z-[1000]">
+      <div className="max-w-[1400px] mx-auto px-6 flex justify-between items-center h-16">
         {/* Logo */}
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '12px',
-        }}>
-          <div style={{
-            width: '40px',
-            height: '40px',
-            backgroundColor: '#007bff',
-            borderRadius: '8px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: '#ffffff',
-            fontWeight: 'bold',
-            fontSize: '20px',
-          }}>
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold text-xl">
             L
           </div>
           <div>
-            <h1 style={{
-              fontSize: '18px',
-              fontWeight: '700',
-              color: '#1a202c',
-              margin: 0,
-              lineHeight: 1,
-            }}>
+            <h1 className="text-lg font-bold text-gray-900 m-0 leading-none">
               Hanghae Company
             </h1>
-            <p style={{
-              fontSize: '11px',
-              color: '#718096',
-              margin: 0,
-              lineHeight: 1,
-              marginTop: '2px',
-            }}>
+            <p className="text-xs text-gray-500 m-0 leading-none mt-0.5">
               Design System Migration Project
             </p>
           </div>
         </div>
 
-
         {/* User Info */}
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '12px',
-        }}>
-          <div style={{
-            textAlign: 'right',
-          }}>
-            <div style={{
-              fontSize: '14px',
-              fontWeight: '600',
-              color: '#1a202c',
-            }}>
+        <div className="flex items-center gap-3">
+          <div className="text-right">
+            <div className="text-sm font-semibold text-gray-900">
               Demo User
             </div>
-            <div style={{
-              fontSize: '12px',
-              color: '#718096',
-            }}>
+            <div className="text-xs text-gray-500">
               demo@example.com
             </div>
           </div>
-          <div style={{
-            width: '40px',
-            height: '40px',
-            borderRadius: '50%',
-            backgroundColor: '#e3f2fd',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: '#007bff',
-            fontWeight: '600',
-            fontSize: '16px',
-          }}>
+          <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-600 font-semibold text-base">
             DU
           </div>
         </div>
