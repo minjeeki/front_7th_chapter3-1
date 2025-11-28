@@ -1,5 +1,5 @@
 import type { Post, PostCategory, PostStatus } from './types';
-import { POST_STATUSES } from './constants';
+import { POST_CATEGORIES, POST_STATUSES } from './constants';
 
 type BadgeVariant = 'default' | 'secondary' | 'destructive' | 'outline';
 
@@ -33,15 +33,11 @@ export function getPostTableColumns() {
 }
 
 /**
- * Post 카테고리 레이블 반환 (한글)
+ * Post 카테고리 레이블 반환
  */
 export function getPostCategoryLabel(category: PostCategory): string {
-  const categoryLabelMap: Record<PostCategory, string> = {
-    development: '개발',
-    design: '디자인',
-    accessibility: '접근성',
-  };
-  return categoryLabelMap[category];
+  const categoryConfig = POST_CATEGORIES.find((c) => c.value === category);
+  return categoryConfig?.label ?? category;
 }
 
 /**
