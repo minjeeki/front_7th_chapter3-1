@@ -1,0 +1,65 @@
+# (25.11.18 수정) 
+# pnpm 세팅으로 기존 CI workflow와 충돌 이슈가 있었습니다.
+# 따라서 "Install pnpm" Step에 pnpm version을 명시하는 방향으로 수정했습니다.
+
+name: Deploy to GitHub Pages
+
+on: 
+  push: # push trigger
+    branches:
+      - main
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: latest # 여기 새로 추가되었습니다 (2025.11.18)
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build main app
+        run: pnpm run build:after
+
+      - name: Build Storybook
+        run: pnpm run build-storybook
+
+      - name: Prepare deployment directory
+        run: |
+          mkdir -p dist
+          # 메인 앱을 루트에 복사
+          cp -r packages/after/dist/* dist/
+          # 스토리북을 storybook 서브 디렉토리에 복사
+          cp -r packages/after/storybook-static dist/storybook
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: "./dist"
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4 
