@@ -1,20 +1,20 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { fn } from 'storybook/test';
-import { PostTable } from '../features/posts/components/PostTable';
-import type { Post } from '../domains/post/types';
+import { PostTable } from '../../components/organisms/PostTable';
+import type { Post } from '../../domains/post/types';
 
 const meta = {
-  title: 'Features/Posts/PostTable',
+  title: 'Organisms/PostTable',
   component: PostTable,
   parameters: {
     layout: 'padded',
     docs: {
       description: {
         component: `
-게시글 목록을 테이블 형태로 표시하는 Features 수준의 컴포넌트입니다.
+게시글 목록을 테이블 형태로 표시하는 Organisms 수준의 컴포넌트입니다.
 
 ## Atomic Design 구조
-- **Level**: Features
+- **Level**: Organisms
 - **Composition**: Organisms/Table 컴포넌트를 사용하여 구현
 - **Usage**: ManagementPage에서 사용
 

@@ -1,19 +1,19 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { fn } from 'storybook/test';
-import { UserActions } from '../features/users/components/UserActions';
+import { UserActions } from '../../components/organisms/UserActions';
 
 const meta = {
-  title: 'Features/Users/UserActions',
+  title: 'Organisms/UserActions',
   component: UserActions,
   parameters: {
     layout: 'centered',
     docs: {
       description: {
         component: `
-사용자 액션 버튼을 표시하는 Features 수준의 컴포넌트입니다.
+사용자 액션 버튼을 표시하는 Organisms 수준의 컴포넌트입니다.
 
 ## Atomic Design 구조
-- **Level**: Features
+- **Level**: Organisms
 - **Composition**: Atoms/Button 컴포넌트를 사용하여 구현
 - **Usage**: UserTable에서 사용
 

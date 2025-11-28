@@ -8,13 +8,13 @@ import {
   FormLabel,
   FormControl,
   FormMessage,
-} from '../../../components/ui/form';
-import { Input } from '../../../components/ui/input';
-import { FormSelect } from '../../../components/ui/form-select';
-import { Button } from '../../../components/ui/button';
-import { createUserSchema, updateUserSchema, type CreateUserFormData, type UpdateUserFormData } from '../../../domains/user/validations';
-import { USER_ROLES, USER_STATUSES } from '../../../domains/user/constants';
-import type { User } from '../../../domains/user/types';
+} from '../ui/form';
+import { Input } from '../ui/input';
+import { FormSelect } from '../molecules/FormSelect';
+import { Button } from '../ui/button';
+import { createUserSchema, updateUserSchema, type CreateUserFormData, type UpdateUserFormData } from '../../domains/user/validations';
+import { USER_ROLES, USER_STATUSES } from '../../domains/user/constants';
+import type { User } from '../../domains/user/types';
 
 interface UserFormProps {
   user?: User;
@@ -167,3 +167,4 @@ export const UserForm: React.FC<UserFormProps> = ({
     </Form>
   );
 };
+

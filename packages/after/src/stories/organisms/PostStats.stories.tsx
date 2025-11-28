@@ -1,19 +1,19 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { PostStats } from '../features/posts/components/PostStats';
-import type { Post } from '../domains/post/types';
+import { PostStats } from '../../components/organisms/PostStats';
+import type { Post } from '../../domains/post/types';
 
 const meta = {
-  title: 'Features/Posts/PostStats',
+  title: 'Organisms/PostStats',
   component: PostStats,
   parameters: {
     layout: 'padded',
     docs: {
       description: {
         component: `
-게시글 통계를 표시하는 Features 수준의 컴포넌트입니다.
+게시글 통계를 표시하는 Organisms 수준의 컴포넌트입니다.
 
 ## Atomic Design 구조
-- **Level**: Features
+- **Level**: Organisms
 - **Composition**: UI/Atoms/Card 컴포넌트를 사용하여 구현
 - **Usage**: ManagementPage의 게시글 관리 탭에서 사용
 

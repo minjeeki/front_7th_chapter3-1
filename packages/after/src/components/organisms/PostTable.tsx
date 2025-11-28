@@ -1,6 +1,6 @@
 import React from 'react';
-import { TableContainer } from '../../../components/organisms/TableContainer';
-import { Badge } from '../../../components/ui/badge';
+import { TableContainer } from './TableContainer';
+import { Badge } from '../ui/badge';
 import { PostActions } from './PostActions';
 import {
   getPostTableColumns,
@@ -8,8 +8,8 @@ import {
   getPostCategoryVariant,
   getPostStatusLabel,
   getPostStatusVariant,
-} from '../../../domains/post/mappers';
-import type { Post } from '../../../domains/post/types';
+} from '../../domains/post/mappers';
+import type { Post } from '../../domains/post/types';
 
 interface PostTableProps {
   posts: Post[];

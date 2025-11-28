@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { Button } from '../components/ui/button';
+import { Button } from '../../components/ui/button';
 
 const meta = {
   title: 'UI/Atoms/Button',
@@ -24,9 +24,10 @@ shadcn/ui 기반의 Button 컴포넌트입니다. 다양한 액션을 수행하�
 - 다양한 variant와 size 지원
 
 ## 사용 예시
-이 컴포넌트는 Features 수준의 컴포넌트에서 사용됩니다:
-- \`Features/Users/UserActions\`: 사용자 액션 버튼
-- \`Features/Posts/PostActions\`: 게시글 액션 버튼
+이 컴포넌트는 Organisms 수준의 컴포넌트에서 사용됩니다:
+- \`Organisms/UserActions\`: 사용자 액션 버튼
+- \`Organisms/PostActions\`: 게시글 액션 버튼
+- \`Features/PostManagement\`, \`Features/UserManagement\`: 생성 버튼
         `,
       },
     },

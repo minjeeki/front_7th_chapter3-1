@@ -1,6 +1,6 @@
 import React from 'react';
-import { Button } from '../../../components/ui/button';
-import type { User } from '../../../domains/user/types';
+import { Button } from '../ui/button';
+import type { User } from '../../domains/user/types';
 
 interface UserActionsProps {
   user: User;

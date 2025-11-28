@@ -1,20 +1,20 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { fn } from 'storybook/test';
-import { PostForm } from '../features/posts/components/PostForm';
-import type { Post } from '../domains/post/types';
+import { PostForm } from '../../components/organisms/PostForm';
+import type { Post } from '../../domains/post/types';
 
 const meta = {
-  title: 'Features/Posts/PostForm',
+  title: 'Organisms/PostForm',
   component: PostForm,
   parameters: {
     layout: 'padded',
     docs: {
       description: {
         component: `
-게시글 생성 및 수정 폼을 제공하는 Features 수준의 컴포넌트입니다.
+게시글 생성 및 수정 폼을 제공하는 Organisms 수준의 컴포넌트입니다.
 
 ## Atomic Design 구조
-- **Level**: Features
+- **Level**: Organisms
 - **Composition**: 
   - UI/Form (shadcn/ui) - react-hook-form 통합
   - UI/Input, UI/Select, UI/Textarea, UI/Button (shadcn/ui)

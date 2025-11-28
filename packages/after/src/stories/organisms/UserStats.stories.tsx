@@ -1,19 +1,19 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { UserStats } from '../features/users/components/UserStats';
-import type { User } from '../domains/user/types';
+import { UserStats } from '../../components/organisms/UserStats';
+import type { User } from '../../domains/user/types';
 
 const meta = {
-  title: 'Features/Users/UserStats',
+  title: 'Organisms/UserStats',
   component: UserStats,
   parameters: {
     layout: 'padded',
     docs: {
       description: {
         component: `
-사용자 통계를 표시하는 Features 수준의 컴포넌트입니다.
+사용자 통계를 표시하는 Organisms 수준의 컴포넌트입니다.
 
 ## Atomic Design 구조
-- **Level**: Features
+- **Level**: Organisms
 - **Composition**: UI/Atoms/Card 컴포넌트를 사용하여 구현
 - **Usage**: ManagementPage의 사용자 관리 탭에서 사용
 

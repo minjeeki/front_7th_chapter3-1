@@ -8,14 +8,14 @@ import {
   FormLabel,
   FormControl,
   FormMessage,
-} from '../../../components/ui/form';
-import { Input } from '../../../components/ui/input';
-import { Textarea } from '../../../components/ui/textarea';
-import { FormSelect } from '../../../components/ui/form-select';
-import { Button } from '../../../components/ui/button';
-import { createPostSchema, updatePostSchema, type CreatePostFormData, type UpdatePostFormData } from '../../../domains/post/validations';
-import { POST_CATEGORIES, POST_STATUSES } from '../../../domains/post/constants';
-import type { Post } from '../../../domains/post/types';
+} from '../ui/form';
+import { Input } from '../ui/input';
+import { Textarea } from '../ui/textarea';
+import { FormSelect } from '../molecules/FormSelect';
+import { Button } from '../ui/button';
+import { createPostSchema, updatePostSchema, type CreatePostFormData, type UpdatePostFormData } from '../../domains/post/validations';
+import { POST_CATEGORIES, POST_STATUSES } from '../../domains/post/constants';
+import type { Post } from '../../domains/post/types';
 
 interface PostFormProps {
   post?: Post;
@@ -186,3 +186,4 @@ export const PostForm: React.FC<PostFormProps> = ({
     </Form>
   );
 };
+

@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { fn } from 'storybook/test';
 import { useState } from 'react';
-import { Pagination } from '../components/molecules/Pagination';
+import { Pagination } from '../../components/molecules/Pagination';
 
 const meta = {
   title: 'Molecules/Pagination',

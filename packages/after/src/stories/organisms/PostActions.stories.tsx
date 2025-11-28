@@ -1,19 +1,19 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { fn } from 'storybook/test';
-import { PostActions } from '../features/posts/components/PostActions';
+import { PostActions } from '../../components/organisms/PostActions';
 
 const meta = {
-  title: 'Features/Posts/PostActions',
+  title: 'Organisms/PostActions',
   component: PostActions,
   parameters: {
     layout: 'centered',
     docs: {
       description: {
         component: `
-게시글 액션 버튼을 표시하는 Features 수준의 컴포넌트입니다.
+게시글 액션 버튼을 표시하는 Organisms 수준의 컴포넌트입니다.
 
 ## Atomic Design 구조
-- **Level**: Features
+- **Level**: Organisms
 - **Composition**: Atoms/Button 컴포넌트를 사용하여 구현
 - **Usage**: PostTable에서 사용
 

@@ -1,6 +1,6 @@
 import React from 'react';
-import { TableContainer } from '../../../components/organisms/TableContainer';
-import { Badge } from '../../../components/ui/badge';
+import { TableContainer } from './TableContainer';
+import { Badge } from '../ui/badge';
 import { UserActions } from './UserActions';
 import {
   getUserTableColumns,
@@ -8,8 +8,8 @@ import {
   getUserRoleVariant,
   getUserStatusLabel,
   getUserStatusVariant,
-} from '../../../domains/user/mappers';
-import type { User } from '../../../domains/user/types';
+} from '../../domains/user/mappers';
+import type { User } from '../../domains/user/types';
 
 interface UserTableProps {
   users: User[];

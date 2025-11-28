@@ -1,6 +1,6 @@
 import React from 'react';
-import { Button } from '../../../components/ui/button';
-import type { Post } from '../../../domains/post/types';
+import { Button } from '../ui/button';
+import type { Post } from '../../domains/post/types';
 
 interface PostActionsProps {
   post: Post;

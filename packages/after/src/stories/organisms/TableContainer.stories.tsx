@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { fn } from 'storybook/test';
-import { TableContainer } from '../components/organisms/TableContainer';
+import { TableContainer } from '../../components/organisms/TableContainer';
 
 const meta = {
   title: 'Organisms/TableContainer',

@@ -8,8 +8,8 @@ import {
   CardContent,
   CardFooter,
   CardAction,
-} from '../components/ui/card';
-import { Button } from '../components/ui/button';
+} from '../../components/ui/card';
+import { Button } from '../../components/ui/button';
 
 const meta = {
   title: 'UI/Atoms/Card',
@@ -42,9 +42,10 @@ shadcn/ui 기반의 Card 컴포넌트입니다. 콘텐츠를 카드 형태로 �
 - 접근성을 고려한 구조
 
 ## 사용 예시
-이 컴포넌트는 Features 수준의 컴포넌트에서 사용됩니다:
-- \`Features/Users/UserStats\`: 사용자 통계 카드
-- \`Features/Posts/PostStats\`: 게시글 통계 카드
+이 컴포넌트는 Organisms와 Molecules 수준의 컴포넌트에서 사용됩니다:
+- \`Molecules/StatsCard\`: 통계 카드 (재사용 가능한 Molecules)
+- \`Organisms/UserStats\`: 사용자 통계 카드
+- \`Organisms/PostStats\`: 게시글 통계 카드
         `,
       },
     },

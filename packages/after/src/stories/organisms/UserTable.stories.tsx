@@ -1,20 +1,20 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { fn } from 'storybook/test';
-import { UserTable } from '../features/users/components/UserTable';
-import type { User } from '../domains/user/types';
+import { UserTable } from '../../components/organisms/UserTable';
+import type { User } from '../../domains/user/types';
 
 const meta = {
-  title: 'Features/Users/UserTable',
+  title: 'Organisms/UserTable',
   component: UserTable,
   parameters: {
     layout: 'padded',
     docs: {
       description: {
         component: `
-사용자 목록을 테이블 형태로 표시하는 Features 수준의 컴포넌트입니다.
+사용자 목록을 테이블 형태로 표시하는 Organisms 수준의 컴포넌트입니다.
 
 ## Atomic Design 구조
-- **Level**: Features
+- **Level**: Organisms
 - **Composition**: Organisms/Table 컴포넌트를 사용하여 구현
 - **Usage**: ManagementPage에서 사용
 

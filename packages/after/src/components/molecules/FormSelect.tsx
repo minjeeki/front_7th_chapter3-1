@@ -5,14 +5,14 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "./select"
+} from "../ui/select"
 
-interface FormSelectOption {
+export interface FormSelectOption {
   value: string
   label: string
 }
 
-interface FormSelectProps {
+export interface FormSelectProps {
   name: string
   value?: string
   onValueChange?: (value: string) => void
