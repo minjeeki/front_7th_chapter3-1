@@ -9,7 +9,7 @@ import {
   CardFooter,
   CardAction,
 } from '../components/ui/card';
-import { Button } from '../components/atoms';
+import { Button } from '../components/ui/button';
 
 const meta = {
   title: 'UI/Atoms/Card',
@@ -113,10 +113,10 @@ export const WithFooter: Story = {
         <p>설정 내용을 여기에 표시합니다.</p>
       </CardContent>
       <CardFooter className="flex justify-between">
-        <Button variant="secondary" size="sm">
+        <Button variant="outline" size="sm">
           취소
         </Button>
-        <Button variant="primary" size="sm">
+        <Button variant="default" size="sm">
           저장
         </Button>
       </CardFooter>
@@ -135,7 +135,7 @@ export const WithHeaderAction: Story = {
         <CardTitle>알림</CardTitle>
         <CardDescription>시스템 알림을 확인하세요.</CardDescription>
         <CardAction>
-          <Button variant="secondary" size="sm">
+          <Button variant="outline" size="sm">
             더보기
           </Button>
         </CardAction>
@@ -209,7 +209,7 @@ export const ProfileCard: Story = {
       </CardContent>
       <CardFooter>
         <div className="w-full">
-          <Button variant="primary" size="sm">
+          <Button variant="default" size="sm">
             프로필 수정
           </Button>
         </div>
@@ -258,7 +258,7 @@ export const CardGrid: Story = {
           </CardContent>
           <CardFooter>
             <div className="w-full">
-              <Button variant="primary" size="sm">
+              <Button variant="default" size="sm">
                 자세히 보기
               </Button>
             </div>

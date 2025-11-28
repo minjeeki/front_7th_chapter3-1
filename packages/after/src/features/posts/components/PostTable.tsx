@@ -1,6 +1,6 @@
 import React from 'react';
 import { TableContainer } from '../../../components/organisms/TableContainer';
-import { Badge } from '../../../components/atoms/Badge';
+import { Badge } from '../../../components/ui/badge';
 import { PostActions } from './PostActions';
 import { getPostTableColumns } from '../../../domains/post/mappers';
 import type { Post } from '../../../domains/post/types';
@@ -36,16 +36,33 @@ export const PostTable: React.FC<PostTableProps> = ({
     const value = row[columnKey as keyof Post];
 
     if (columnKey === 'category') {
-      const type =
-        value === 'development' ? 'primary' :
-        value === 'design' ? 'info' :
-        value === 'accessibility' ? 'danger' :
-        'secondary';
-      return <Badge type={type} pill>{String(value)}</Badge>;
+      const category = value as Post['category'];
+      const categoryLabels: Record<Post['category'], string> = {
+        development: '개발',
+        design: '디자인',
+        accessibility: '접근성',
+      };
+      const categoryVariants: Record<Post['category'], 'default' | 'secondary' | 'destructive' | 'outline'> = {
+        development: 'default',
+        design: 'secondary',
+        accessibility: 'destructive',
+      };
+      return <Badge variant={categoryVariants[category]}>{categoryLabels[category]}</Badge>;
     }
 
     if (columnKey === 'status') {
-      return <Badge status={value as Post['status']} showIcon />;
+      const status = value as Post['status'];
+      const statusLabels: Record<Post['status'], string> = {
+        draft: '임시저장',
+        published: '게시됨',
+        archived: '보관됨',
+      };
+      const statusVariants: Record<Post['status'], 'default' | 'secondary' | 'destructive' | 'outline'> = {
+        draft: 'secondary',
+        published: 'default',
+        archived: 'outline',
+      };
+      return <Badge variant={statusVariants[status]}>{statusLabels[status]}</Badge>;
     }
 
     if (columnKey === 'views') {

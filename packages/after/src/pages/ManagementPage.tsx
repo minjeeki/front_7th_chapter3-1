@@ -1,12 +1,23 @@
 import React, { useState, useEffect } from 'react';
-import { Button } from '../components/atoms';
-import { Alert, Modal } from '../components/organisms';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '../components/ui/dialog';
+import {
+  Alert,
+  AlertTitle,
+  AlertDescription,
+} from '../components/ui/alert';
+import { Button } from '../components/ui/button';
 import type { User } from '../domains/user/types';
 import type { Post } from '../domains/post/types';
 import { useNotification, useUserManagement, usePostManagement } from '../hooks';
 import { UserStats, UserTable, UserForm } from '../features/users';
 import { PostStats, PostTable, PostForm } from '../features/posts';
 import '../styles/components.css';
+import { XIcon } from 'lucide-react';
 
 type EntityType = 'user' | 'post';
 type Entity = User | Post;
@@ -100,80 +111,60 @@ export const ManagementPage: React.FC = () => {
 
 
   return (
-    <div style={{ minHeight: '100vh', background: '#f0f0f0' }}>
-      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '20px' }}>
-        <div style={{ marginBottom: '20px' }}>
-          <h1 style={{
-            fontSize: '24px',
-            fontWeight: 'bold',
-            marginBottom: '5px',
-            color: '#333'
-          }}>
+    <div className="min-h-screen bg-gray-100">
+      <div className="max-w-7xl mx-auto p-5">
+        <div className="mb-5">
+          <h1 className="text-2xl font-bold mb-1 text-gray-800">
             관리 시스템
           </h1>
-          <p style={{ color: '#666', fontSize: '14px' }}>
+          <p className="text-gray-600 text-sm">
             사용자와 게시글을 관리하세요
           </p>
         </div>
 
-        <div style={{
-          background: 'white',
-          border: '1px solid #ddd',
-          padding: '10px'
-        }}>
-          <div style={{
-            marginBottom: '15px',
-            borderBottom: '2px solid #ccc',
-            paddingBottom: '5px'
-          }}>
-            <button
+        <div className="bg-white border border-gray-300 p-2.5">
+          <div className="mb-4 border-b-2 border-gray-300 pb-1 flex gap-1">
+            <Button
               onClick={() => setEntityType('post')}
-              style={{
-                padding: '8px 16px',
-                marginRight: '5px',
-                fontSize: '14px',
-                fontWeight: entityType === 'post' ? 'bold' : 'normal',
-                border: '1px solid #999',
-                background: entityType === 'post' ? '#1976d2' : '#f5f5f5',
-                color: entityType === 'post' ? 'white' : '#333',
-                cursor: 'pointer',
-                borderRadius: '3px'
-              }}
+              variant={entityType === 'post' ? 'default' : 'outline'}
+              size="sm"
             >
               게시글
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={() => setEntityType('user')}
-              style={{
-                padding: '8px 16px',
-                fontSize: '14px',
-                fontWeight: entityType === 'user' ? 'bold' : 'normal',
-                border: '1px solid #999',
-                background: entityType === 'user' ? '#1976d2' : '#f5f5f5',
-                color: entityType === 'user' ? 'white' : '#333',
-                cursor: 'pointer',
-                borderRadius: '3px'
-              }}
+              variant={entityType === 'user' ? 'default' : 'outline'}
+              size="sm"
             >
               사용자
-            </button>
+            </Button>
           </div>
 
           <div>
-            <div style={{ marginBottom: '15px', textAlign: 'right' }}>
-              <Button variant="primary" size="md" onClick={() => setIsCreateModalOpen(true)}>
+            <div className="mb-4 text-right">
+              <Button onClick={() => setIsCreateModalOpen(true)}>
                 새로 만들기
               </Button>
             </div>
 
             {notifications.map((notification) => (
-              <div key={notification.id} style={{ marginBottom: '10px' }}>
+              <div key={notification.id} className="mb-2.5">
                 <Alert
-                  variant={notification.type === 'success' ? 'success' : 'error'}
-                  title={notification.type === 'success' ? '성공' : '오류'}
-                  onClose={() => removeNotification(notification.id)}
+                  variant={notification.type === 'error' ? 'destructive' : 'default'}
+                  className="relative"
                 >
-                  {notification.message}
+                  <AlertTitle>
+                    {notification.type === 'success' ? '성공' : '오류'}
+                  </AlertTitle>
+                  <AlertDescription>
+                    {notification.message}
+                  </AlertDescription>
+                  <button
+                    onClick={() => removeNotification(notification.id)}
+                    className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
+                  >
+                    <XIcon className="size-4" />
+                  </button>
                 </Alert>
               </div>
             ))}
@@ -184,7 +175,7 @@ export const ManagementPage: React.FC = () => {
               <PostStats posts={posts} />
             )}
 
-            <div style={{ border: '1px solid #ddd', background: 'white', overflow: 'auto' }}>
+            <div className="border border-gray-300 bg-white overflow-auto">
               {entityType === 'user' ? (
                 <UserTable
                   users={users}
@@ -211,75 +202,79 @@ export const ManagementPage: React.FC = () => {
 
       </div>
 
-        <Modal
-          isOpen={isCreateModalOpen}
-          onClose={() => {
-            setIsCreateModalOpen(false);
-          }}
-          title={`새 ${entityType === 'user' ? '사용자' : '게시글'} 만들기`}
-          size="large"
-          showFooter={false}
-        >
-          {entityType === 'user' ? (
-            <UserForm
-              onSubmit={handleCreateUser}
-              onCancel={() => setIsCreateModalOpen(false)}
-              submitLabel="생성"
-              cancelLabel="취소"
-            />
-          ) : (
-            <PostForm
-              onSubmit={handleCreatePost}
-              onCancel={() => setIsCreateModalOpen(false)}
-              submitLabel="생성"
-              cancelLabel="취소"
-            />
-          )}
-        </Modal>
+        <Dialog open={isCreateModalOpen} onOpenChange={setIsCreateModalOpen}>
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>
+                새 {entityType === 'user' ? '사용자' : '게시글'} 만들기
+              </DialogTitle>
+            </DialogHeader>
+            {entityType === 'user' ? (
+              <UserForm
+                onSubmit={handleCreateUser}
+                onCancel={() => setIsCreateModalOpen(false)}
+                submitLabel="생성"
+                cancelLabel="취소"
+              />
+            ) : (
+              <PostForm
+                onSubmit={handleCreatePost}
+                onCancel={() => setIsCreateModalOpen(false)}
+                submitLabel="생성"
+                cancelLabel="취소"
+              />
+            )}
+          </DialogContent>
+        </Dialog>
 
-        <Modal
-          isOpen={isEditModalOpen}
-          onClose={() => {
-            setIsEditModalOpen(false);
+        <Dialog open={isEditModalOpen} onOpenChange={(open) => {
+          setIsEditModalOpen(open);
+          if (!open) {
             setSelectedItem(null);
-          }}
-          title={`${entityType === 'user' ? '사용자' : '게시글'} 수정`}
-          size="large"
-          showFooter={false}
-        >
-          {selectedItem && (
-            <div style={{ marginBottom: '16px' }}>
-              <Alert variant="info">
-                ID: {selectedItem.id} | 생성일: {selectedItem.createdAt}
-                {entityType === 'post' && ` | 조회수: ${(selectedItem as Post).views}`}
-              </Alert>
-            </div>
-          )}
+          }
+        }}>
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>
+                {entityType === 'user' ? '사용자' : '게시글'} 수정
+              </DialogTitle>
+            </DialogHeader>
+            {selectedItem && (
+              <div className="mb-4">
+                <Alert variant="default">
+                  <AlertDescription>
+                    ID: {selectedItem.id} | 생성일: {selectedItem.createdAt}
+                    {entityType === 'post' && ` | 조회수: ${(selectedItem as Post).views}`}
+                  </AlertDescription>
+                </Alert>
+              </div>
+            )}
 
-          {entityType === 'user' && selectedItem ? (
-            <UserForm
-              user={selectedItem as User}
-              onSubmit={handleUpdateUser}
-              onCancel={() => {
-                setIsEditModalOpen(false);
-                setSelectedItem(null);
-              }}
-              submitLabel="수정 완료"
-              cancelLabel="취소"
-            />
-          ) : selectedItem ? (
-            <PostForm
-              post={selectedItem as Post}
-              onSubmit={handleUpdatePost}
-              onCancel={() => {
-                setIsEditModalOpen(false);
-                setSelectedItem(null);
-              }}
-              submitLabel="수정 완료"
-              cancelLabel="취소"
-            />
-          ) : null}
-        </Modal>
+            {entityType === 'user' && selectedItem ? (
+              <UserForm
+                user={selectedItem as User}
+                onSubmit={handleUpdateUser}
+                onCancel={() => {
+                  setIsEditModalOpen(false);
+                  setSelectedItem(null);
+                }}
+                submitLabel="수정 완료"
+                cancelLabel="취소"
+              />
+            ) : selectedItem ? (
+              <PostForm
+                post={selectedItem as Post}
+                onSubmit={handleUpdatePost}
+                onCancel={() => {
+                  setIsEditModalOpen(false);
+                  setSelectedItem(null);
+                }}
+                submitLabel="수정 완료"
+                cancelLabel="취소"
+              />
+            ) : null}
+          </DialogContent>
+        </Dialog>
     </div>
   );
 };
