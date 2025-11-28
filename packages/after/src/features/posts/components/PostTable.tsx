@@ -2,7 +2,13 @@ import React from 'react';
 import { TableContainer } from '../../../components/organisms/TableContainer';
 import { Badge } from '../../../components/ui/badge';
 import { PostActions } from './PostActions';
-import { getPostTableColumns } from '../../../domains/post/mappers';
+import {
+  getPostTableColumns,
+  getPostCategoryLabel,
+  getPostCategoryVariant,
+  getPostStatusLabel,
+  getPostStatusVariant,
+} from '../../../domains/post/mappers';
 import type { Post } from '../../../domains/post/types';
 
 interface PostTableProps {
@@ -37,32 +43,12 @@ export const PostTable: React.FC<PostTableProps> = ({
 
     if (columnKey === 'category') {
       const category = value as Post['category'];
-      const categoryLabels: Record<Post['category'], string> = {
-        development: '개발',
-        design: '디자인',
-        accessibility: '접근성',
-      };
-      const categoryVariants: Record<Post['category'], 'default' | 'secondary' | 'destructive' | 'outline'> = {
-        development: 'default',
-        design: 'secondary',
-        accessibility: 'destructive',
-      };
-      return <Badge variant={categoryVariants[category]}>{categoryLabels[category]}</Badge>;
+      return <Badge variant={getPostCategoryVariant(category)}>{getPostCategoryLabel(category)}</Badge>;
     }
 
     if (columnKey === 'status') {
       const status = value as Post['status'];
-      const statusLabels: Record<Post['status'], string> = {
-        draft: '임시저장',
-        published: '게시됨',
-        archived: '보관됨',
-      };
-      const statusVariants: Record<Post['status'], 'default' | 'secondary' | 'destructive' | 'outline'> = {
-        draft: 'secondary',
-        published: 'default',
-        archived: 'outline',
-      };
-      return <Badge variant={statusVariants[status]}>{statusLabels[status]}</Badge>;
+      return <Badge variant={getPostStatusVariant(status)}>{getPostStatusLabel(status)}</Badge>;
     }
 
     if (columnKey === 'views') {

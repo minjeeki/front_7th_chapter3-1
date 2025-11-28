@@ -1,4 +1,7 @@
-import type { User } from './types';
+import type { User, UserRole, UserStatus } from './types';
+import { USER_ROLES, USER_STATUSES } from './constants';
+
+type BadgeVariant = 'default' | 'secondary' | 'destructive' | 'outline';
 
 /**
  * User 통계 계산
@@ -27,5 +30,45 @@ export function getUserTableColumns() {
     { key: 'lastLogin', header: '마지막 로그인', width: '140px' },
     { key: 'actions', header: '관리', width: '200px' },
   ];
+}
+
+/**
+ * User 역할 레이블 반환
+ */
+export function getUserRoleLabel(role: UserRole): string {
+  const roleConfig = USER_ROLES.find((r) => r.value === role);
+  return roleConfig?.label ?? role;
+}
+
+/**
+ * User 역할 Badge variant 반환
+ */
+export function getUserRoleVariant(role: UserRole): BadgeVariant {
+  const variantMap: Record<UserRole, BadgeVariant> = {
+    admin: 'destructive',
+    moderator: 'secondary',
+    user: 'default',
+  };
+  return variantMap[role];
+}
+
+/**
+ * User 상태 레이블 반환
+ */
+export function getUserStatusLabel(status: UserStatus): string {
+  const statusConfig = USER_STATUSES.find((s) => s.value === status);
+  return statusConfig?.label ?? status;
+}
+
+/**
+ * User 상태 Badge variant 반환
+ */
+export function getUserStatusVariant(status: UserStatus): BadgeVariant {
+  const variantMap: Record<UserStatus, BadgeVariant> = {
+    active: 'default',
+    inactive: 'secondary',
+    suspended: 'destructive',
+  };
+  return variantMap[status];
 }
 

@@ -1,4 +1,7 @@
-import type { Post } from './types';
+import type { Post, PostCategory, PostStatus } from './types';
+import { POST_STATUSES } from './constants';
+
+type BadgeVariant = 'default' | 'secondary' | 'destructive' | 'outline';
 
 /**
  * Post 통계 계산
@@ -27,5 +30,49 @@ export function getPostTableColumns() {
     { key: 'createdAt', header: '작성일', width: '120px' },
     { key: 'actions', header: '관리', width: '250px' },
   ];
+}
+
+/**
+ * Post 카테고리 레이블 반환 (한글)
+ */
+export function getPostCategoryLabel(category: PostCategory): string {
+  const categoryLabelMap: Record<PostCategory, string> = {
+    development: '개발',
+    design: '디자인',
+    accessibility: '접근성',
+  };
+  return categoryLabelMap[category];
+}
+
+/**
+ * Post 카테고리 Badge variant 반환
+ */
+export function getPostCategoryVariant(category: PostCategory): BadgeVariant {
+  const variantMap: Record<PostCategory, BadgeVariant> = {
+    development: 'default',
+    design: 'secondary',
+    accessibility: 'destructive',
+  };
+  return variantMap[category];
+}
+
+/**
+ * Post 상태 레이블 반환
+ */
+export function getPostStatusLabel(status: PostStatus): string {
+  const statusConfig = POST_STATUSES.find((s) => s.value === status);
+  return statusConfig?.label ?? status;
+}
+
+/**
+ * Post 상태 Badge variant 반환
+ */
+export function getPostStatusVariant(status: PostStatus): BadgeVariant {
+  const variantMap: Record<PostStatus, BadgeVariant> = {
+    draft: 'secondary',
+    published: 'default',
+    archived: 'outline',
+  };
+  return variantMap[status];
 }
 
