@@ -16,7 +16,7 @@ const meta = {
 - **Level**: Organisms
 - **Composition**: 
   - UI/Atoms/Table (shadcn/ui)
-  - Molecules/Search
+  - UI/Atoms/Input (shadcn/ui)
   - Molecules/Pagination
   - hooks/useTableSort
 - **Usage**: UserTable, PostTable에서 사용

@@ -7,7 +7,7 @@ import {
   TableRow,
   TableCell,
 } from '../ui/table';
-import { Search } from '../molecules/Search';
+import { Input } from '../ui/input';
 import { Pagination } from '../molecules/Pagination';
 import { useTableSort } from '../../hooks/useTableSort';
 
@@ -98,7 +98,15 @@ export const TableContainer = <T = unknown>({
   return (
     <div className="table-container">
       {searchable && (
-        <Search value={searchTerm} onChange={setSearchTerm} />
+        <div className="mb-4">
+          <Input
+            type="text"
+            placeholder="검색..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-[300px]"
+          />
+        </div>
       )}
 
       <Table>
