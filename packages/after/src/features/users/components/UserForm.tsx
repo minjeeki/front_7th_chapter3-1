@@ -10,13 +10,7 @@ import {
   FormMessage,
 } from '../../../components/ui/form';
 import { Input } from '../../../components/ui/input';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '../../../components/ui/select';
+import { FormSelect } from '../../../components/ui/form-select';
 import { Button } from '../../../components/ui/button';
 import { createUserSchema, updateUserSchema, type CreateUserFormData, type UpdateUserFormData } from '../../../domains/user/validations';
 import { USER_ROLES, USER_STATUSES } from '../../../domains/user/constants';
@@ -112,24 +106,16 @@ export const UserForm: React.FC<UserFormProps> = ({
             render={({ field }) => (
               <FormItem>
                 <FormLabel>역할</FormLabel>
-                <Select
-                  onValueChange={field.onChange}
-                  value={field.value}
-                  disabled={form.formState.isSubmitting}
-                >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="역할 선택" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {USER_ROLES.map((role) => (
-                      <SelectItem key={role.value} value={role.value}>
-                        {role.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <FormControl>
+                  <FormSelect
+                    name="role"
+                    value={field.value}
+                    onValueChange={field.onChange}
+                    options={USER_ROLES}
+                    placeholder="역할 선택"
+                    disabled={form.formState.isSubmitting}
+                  />
+                </FormControl>
                 <FormMessage />
               </FormItem>
             )}
@@ -141,24 +127,16 @@ export const UserForm: React.FC<UserFormProps> = ({
             render={({ field }) => (
               <FormItem>
                 <FormLabel>상태</FormLabel>
-                <Select
-                  onValueChange={field.onChange}
-                  value={field.value}
-                  disabled={form.formState.isSubmitting}
-                >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="상태 선택" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {USER_STATUSES.map((status) => (
-                      <SelectItem key={status.value} value={status.value}>
-                        {status.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <FormControl>
+                  <FormSelect
+                    name="status"
+                    value={field.value}
+                    onValueChange={field.onChange}
+                    options={USER_STATUSES}
+                    placeholder="상태 선택"
+                    disabled={form.formState.isSubmitting}
+                  />
+                </FormControl>
                 <FormMessage />
               </FormItem>
             )}

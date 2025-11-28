@@ -11,13 +11,7 @@ import {
 } from '../../../components/ui/form';
 import { Input } from '../../../components/ui/input';
 import { Textarea } from '../../../components/ui/textarea';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '../../../components/ui/select';
+import { FormSelect } from '../../../components/ui/form-select';
 import { Button } from '../../../components/ui/button';
 import { createPostSchema, updatePostSchema, type CreatePostFormData, type UpdatePostFormData } from '../../../domains/post/validations';
 import { POST_CATEGORIES, POST_STATUSES } from '../../../domains/post/constants';
@@ -112,24 +106,16 @@ export const PostForm: React.FC<PostFormProps> = ({
             render={({ field }) => (
               <FormItem>
                 <FormLabel>카테고리</FormLabel>
-                <Select
-                  onValueChange={field.onChange}
-                  value={field.value}
-                  disabled={form.formState.isSubmitting}
-                >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="카테고리 선택" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {POST_CATEGORIES.map((category) => (
-                      <SelectItem key={category.value} value={category.value}>
-                        {category.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <FormControl>
+                  <FormSelect
+                    name="category"
+                    value={field.value}
+                    onValueChange={field.onChange}
+                    options={POST_CATEGORIES}
+                    placeholder="카테고리 선택"
+                    disabled={form.formState.isSubmitting}
+                  />
+                </FormControl>
                 <FormMessage />
               </FormItem>
             )}
@@ -161,24 +147,16 @@ export const PostForm: React.FC<PostFormProps> = ({
           render={({ field }) => (
             <FormItem>
               <FormLabel>상태</FormLabel>
-              <Select
-                onValueChange={field.onChange}
-                defaultValue={field.value}
-                disabled={form.formState.isSubmitting}
-              >
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="상태 선택" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {POST_STATUSES.map((status) => (
-                    <SelectItem key={status.value} value={status.value}>
-                      {status.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <FormControl>
+                <FormSelect
+                  name="status"
+                  value={field.value}
+                  onValueChange={field.onChange}
+                  options={POST_STATUSES}
+                  placeholder="상태 선택"
+                  disabled={form.formState.isSubmitting}
+                />
+              </FormControl>
               <FormMessage />
             </FormItem>
           )}
